@@ -5,11 +5,16 @@ python:
   - "3.6"
 
 os: linux
-# sudo: required
+sudo: required
 
 # command to install dependencies
 install:
+  - apt-get install postgresql
   - pip install -r devtest/requirements.txt
 
+before_script:
+  - service postgresql start
+  - chmod +x devtest/test.sh
+
 # command to run tests
-script: nose2 -v
+script: ./devtest/test.sh
