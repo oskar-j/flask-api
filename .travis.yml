@@ -1,7 +1,9 @@
 language: python
 python:
+  - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7-dev"
 install: 
-  - pip install -r api/requirements.txt
+  - pip install -r devtest/requirements.txt
 script: nose2 -v
