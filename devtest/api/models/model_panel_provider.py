@@ -11,7 +11,7 @@ class PanelProvider(Base):
 
     __tablename__ = 'panel_provider'
 
-    code = db.Column(db.String(12), unique=True, nullable=False)
+    code = db.Column(db.String(24), unique=True, nullable=False)
 
     # TODO: do we need this?
     # location_groups = db.relationship('LocationGroup', backref='panel_provider', lazy=True)
