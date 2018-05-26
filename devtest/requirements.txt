@@ -1,0 +1,15 @@
+click
+flask
+flask-SQLAlchemy
+flask_migrate
+flask_script
+psycopg2
+itsdangerous
+Jinja2
+MarkupSafe
+marshmallow
+marshmallow-sqlalchemy
+nose2
+SQLAlchemy
+Werkzeug
+-e git://github.com/gangverk/flask-swagger.git#egg=flask-swagger
