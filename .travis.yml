@@ -9,11 +9,11 @@ sudo: required
 
 # command to install dependencies
 install:
-  - apt-get install postgresql
+  - sudo apt-get install postgresql
   - pip install -r devtest/requirements.txt
 
 before_script:
-  - service postgresql start
+  - sudo service postgresql start
   - chmod +x devtest/test.sh
 
 # command to run tests
