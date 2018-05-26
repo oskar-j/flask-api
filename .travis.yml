@@ -3,7 +3,13 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
-  - "3.7-dev"
-install: 
+
+os: linux
+# sudo: required
+
+# command to install dependencies
+install:
   - pip install -r devtest/requirements.txt
+
+# command to run tests
 script: nose2 -v

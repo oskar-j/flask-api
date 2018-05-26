@@ -3,65 +3,69 @@
 
 import json
 from api.utils.test_base import BaseTestCase
-from api.models.model_author import Author
-from api.models.model_book import Book
+from api.models.model_country import Country
+from api.models.model_panel_provider import PanelProvider
 from datetime import datetime
 
 
-def create_authors():
-    author1 = Author(name="John", surname="Doe").create()
-    Book(title="Test Book 1", year=datetime(1976, 1, 1), author_id=author1.id).create()
-    Book(title="Test Book 2", year=datetime(1992, 12, 1), author_id=author1.id).create()
-
-    author2 = Author(name="Jane", surname="Doe").create()
-    Book(title="Test Book 3", year=datetime(1986, 1, 3), author_id=author2.id).create()
-    Book(title="Test Book 4", year=datetime(1992, 12, 1), author_id=author2.id).create()
+TIME_DOT_COM = 'time dot com'
+OPEN_LIBRARY = 'open library'
+TIME_DOT_COM_ALT = 'time dot com [alt]'
 
 
-class TestAuthors(BaseTestCase):
+def create_panel_providers():
+    # 3 Panel Providers
+    panel1 = PanelProvider(code=TIME_DOT_COM).create()
+    panel2 = PanelProvider(code=OPEN_LIBRARY).create()
+    panel3 = PanelProvider(code=TIME_DOT_COM_ALT).create()
+
+
+def create_countries():
+    # 3 Countries, each with different panel provider
+    country1 = Country(country_code='UK',
+                       panel_provider_id=PanelProvider.query.filter_by(code=TIME_DOT_COM).first().id).create()
+    country2 = Country(country_code='US',
+                       panel_provider_id=PanelProvider.query.filter_by(code=OPEN_LIBRARY).first().id).create()
+    country3 = Country(country_code='PL',
+                       panel_provider_id=PanelProvider.query.filter_by(code=TIME_DOT_COM_ALT).first().id).create()
+
+
+class TestCountries(BaseTestCase):
+
     def setUp(self):
-        super(TestAuthors, self).setUp()
-        create_authors()
+        super(TestCountries, self).setUp()  # hence BaseTestCase
+        create_panel_providers()
+        create_countries()
 
-    def test_get_authors(self):
+    def test_get_countries(self):
         response = self.app.get(
-            '/api/v1.0/authors',
+            '/countries',
             content_type='application/json'
         )
         data = json.loads(response.data)
         self.assertEqual(200, response.status_code)
-        self.assertTrue('authors' in data)
+        self.assertTrue('countries' in data)
 
-    def test_get_author_detail(self):
+    def test_get_country_detail(self):
         response = self.app.get(
-            '/api/v1.0/authors/1',
+            '/country/UK',
             content_type='application/json'
             )
         data = json.loads(response.data)
         self.assertEqual(200, response.status_code)
-        self.assertTrue('author' in data)
+        self.assertTrue('country' in data)
 
-    def test_create_author(self):
-        author = {
-            'name': 'John',
-            'surname': 'Doe',
-            'books': [
-                {
-                    'title': 'My First Book',
-                    'year': '1976-01-02'
-                },
-                {
-                    'title': 'My Second Book',
-                    'year': '1992-10-01'
-                }
-            ]
+    def test_create_country(self):
+        country = {
+            'country_code': 'ZA',
+            'panel_provider_id': '1'
         }
 
         response = self.app.post(
-            '/api/v1.0/authors',
-            data=json.dumps(author),
+            '/country',
+            data=json.dumps(country),
             content_type='application/json'
             )
         data = json.loads(response.data)
         self.assertEqual(200, response.status_code)
-        self.assertTrue('author' in data)
+        self.assertTrue('country' in data)

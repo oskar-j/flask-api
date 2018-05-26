@@ -48,3 +48,5 @@ class TargetGroupSchema(ModelSchema):
 
     date_created = fields.String(dump_only=True)
     date_updated = fields.String(dump_only=True)
+
+    external_id = fields.String(required=True)

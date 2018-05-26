@@ -12,12 +12,17 @@ import api.utils.responses as resp
 from api.routes.routes_general import route_path_general
 
 
+# set this to whatever you want
+# but then check hardcoded routes as well
+url_prefix = ''
+
+
 def create_app(config):
     app = Flask(__name__)
 
     app.config.from_object(config)
 
-    app.register_blueprint(route_path_general, url_prefix='/api')
+    app.register_blueprint(route_path_general, url_prefix=url_prefix)
 
     # START GLOBAL HTTP CONFIGURATIONS
     @app.after_request
@@ -41,11 +46,11 @@ def create_app(config):
 
     # END GLOBAL HTTP CONFIGURATIONS
 
-    @app.route("/api/v1.0/spec")
+    @app.route("/api/spec")
     def spec():
-        swag = swagger(app, prefix='/api/v1.0')
+        swag = swagger(app, prefix=url_prefix)
         swag['info']['version'] = "1.0"
-        swag['info']['title'] = "Flask Starter API"
+        swag['info']['title'] = "Flask powered by API, Alchemy and Marshmallow 'devtest' showcase"
         return jsonify(swag)
 
     db.init_app(app)

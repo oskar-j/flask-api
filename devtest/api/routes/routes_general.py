@@ -6,80 +6,15 @@ from flask import request
 from api.utils.responses import response_with
 from api.utils import responses as resp
 from api.models.model_country import Country, CountrySchema
+from api.models.model_location import Location, LocationSchema
+from api.models.model_target_group import TargetGroup, TargetGroupSchema
+
 
 route_path_general = Blueprint("route_path_general", __name__)
 
 
-@route_path_general.route('/v1.0/countries', methods=['POST'])
+@route_path_general.route('/country', methods=['POST'])
 def create_country():
-    """
-    Create author endpoint
-    ---
-    parameters:
-        - in: body
-          name: body
-          schema:
-            id: Author
-            required:
-                - name
-                - surname
-                - books
-            properties:
-                name:
-                    type: string
-                    description: First name of the author
-                    default: "John"
-                surname:
-                    type: string
-                    description: Surname of the author
-                    default: "Doe"
-                books:
-                    type: string
-                    description: Book list of author
-                    type: array
-                    items:
-                        schema:
-                            id: BookSchema
-                            properties:
-                                title:
-                                    type: string
-                                    default: "My First Book"
-                                year:
-                                    type: date
-                                    default: "1989-01-01"
-    responses:
-            200:
-                description: Author successfully created
-                schema:
-                  id: AuthorCreated
-                  properties:
-                    code:
-                      type: string
-                    message:
-                      type: string
-                    value:
-                      schema:
-                        id: AuthorFull
-                        properties:
-                            name:
-                                type: string
-                            surname:
-                                type: string
-                            books:
-                                type: array
-                                items:
-                                    schema:
-                                        id: BookSchema
-            422:
-                description: Invalid input arguments
-                schema:
-                    id: invalidInput
-                    properties:
-                        code:
-                            type: string
-                        message:
-                            type: string
-    """
     try:
         data = request.get_json()
         country_schema = CountrySchema()
@@ -90,80 +25,65 @@ def create_country():
         return response_with(resp.INVALID_INPUT_422)
 
 
-@route_path_general.route('/v1.0/countries', methods=['GET'])
+@route_path_general.route('/country', methods=['POST'])
+def create_location():
+    try:
+        data = request.get_json()
+        country_schema = CountrySchema()
+        country, error = country_schema.load(data)
+        result = country_schema.dump(country.create()).data
+        return response_with(resp.SUCCESS_200, value={"country": result})
+    except Exception:
+        return response_with(resp.INVALID_INPUT_422)
+
+
+@route_path_general.route('/countries', methods=['GET'])
 def get_country_list():
-    """
-    Get author list
-    ---
-    responses:
-            200:
-                description: Returns author list
-                schema:
-                  id: AuthorList
-                  properties:
-                    code:
-                      type: string
-                    message:
-                      type: string
-                    authors:
-                        type: array
-                        items:
-                            schema:
-                                id: AuthorSummary
-                                properties:
-                                    name:
-                                        type: string
-                                    surname:
-                                        type: string
-    """
     fetched = Country.query.all()
-    country_schema = CountrySchema(many=True, only=['id', 'country_code'])
+    country_schema = CountrySchema(many=True, only=['id', 'country_code', 'date_created'])
     countries, error = country_schema.dump(fetched)
     return response_with(resp.SUCCESS_200, value={"countries": countries})
 
 
-@route_path_general.route('/v1.0/countries/<int:country_id>', methods=['GET'])
-def get_country_detail(country_id):
-    """
-    Get author detail
-    ---
-    parameters:
-        - name: author_id
-          in: path
-          description: ID of the author
-          required: true
-          schema:
-            type: integer
+@route_path_general.route('/country/<string:country_code>', methods=['GET'])
+def get_country_detail(country_code):
+    fetched = Country.query.filter_by(country_code=country_code).first()
+    country_schema = CountrySchema()
+    country, error = country_schema.dump(fetched)
+    return response_with(resp.SUCCESS_200, value={"country": country})
 
-    responses:
-            200:
-                description: Returns author detail
-                schema:
-                  id: AuthorList
-                  properties:
-                    code:
-                      type: string
-                    message:
-                      type: string
-                    author:
-                        id: AuthorFull
-                        properties:
-                            name:
-                                type: string
-                            surname:
-                                type: string
-                            books:
-                                type: array
-                                items:
-                                    schema:
-                                        id: BookSchema
-                                        properties:
-                                            title:
-                                                type: string
-                                            year:
-                                                type: date
-    """
-    fetched = Country.query.filter_by(id=country_id).first()
+
+@route_path_general.route('/locations', methods=['GET'])
+def get_location_list():
+    fetched = Location.query.all()
+    location_schema = LocationSchema(many=True, only=['id', 'name', 'date_created', 'external_id'])
+    locations, error = location_schema.dump(fetched)
+    return response_with(resp.SUCCESS_200, value={"locations": locations})
+
+
+@route_path_general.route('/target_groups', methods=['GET'])
+def get_target_group_list():
+    fetched = TargetGroup.query.all()
+    target_group_schema = TargetGroupSchema(many=True, only=['id', 'name', 'date_created', 'external_id'])
+    target_groups, error = target_group_schema.dump(fetched)
+    return response_with(resp.SUCCESS_200, value={"target_groups": target_groups})
+
+
+# Public API responding to the following requests
+# 4 - GET locations/:country_code
+@route_path_general.route('/locations/<int:country_code>', methods=['GET'])
+def get_locations_by_country(country_code):
+    fetched = Country.query.filter_by(country_code=country_code).first()
+    country_schema = CountrySchema()
+    country, error = country_schema.dump(fetched)
+    return response_with(resp.SUCCESS_200, value={"country": country})
+
+
+# Public API responding to the following requests
+# 5 - GET target_groups/:country_code
+@route_path_general.route('/target_groups/<int:country_code>', methods=['GET'])
+def get_target_groups_by_country(country_code):
+    fetched = Country.query.filter_by(country_code=country_code).first()
     country_schema = CountrySchema()
     country, error = country_schema.dump(fetched)
     return response_with(resp.SUCCESS_200, value={"country": country})
