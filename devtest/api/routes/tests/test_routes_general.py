@@ -30,6 +30,16 @@ def create_countries():
                        panel_provider_id=PanelProvider.query.filter_by(code=TIME_DOT_COM_ALT).first().id).create()
 
 
+def safe_json_loads(s):
+    try:
+        # Python 3.6 compliant
+        result = json.loads(s)
+    except TypeError:
+        # Raw fix for situation when we have Python 3.5 or older
+        result = json.loads(s.decode('utf-8'))
+    return result
+
+
 class TestCountries(BaseTestCase):
 
     def setUp(self):
@@ -42,7 +52,7 @@ class TestCountries(BaseTestCase):
             '/countries',
             content_type='application/json'
         )
-        data = json.loads(response.data)
+        data = safe_json_loads(response.data)
         self.assertEqual(200, response.status_code)
         self.assertTrue('countries' in data)
 
@@ -51,7 +61,7 @@ class TestCountries(BaseTestCase):
             '/country/UK',
             content_type='application/json'
             )
-        data = json.loads(response.data)
+        data = safe_json_loads(response.data)
         self.assertEqual(200, response.status_code)
         self.assertTrue('country' in data)
 
@@ -66,6 +76,6 @@ class TestCountries(BaseTestCase):
             data=json.dumps(country),
             content_type='application/json'
             )
-        data = json.loads(response.data)
+        data = safe_json_loads(response.data)
         self.assertEqual(200, response.status_code)
         self.assertTrue('country' in data)
