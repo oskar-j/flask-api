@@ -19,7 +19,7 @@ if platform.system() == 'Windows':
     options.binary_location = 'C:\\Users\\oskar\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe'
     chrome_driver_binary = 'C:\\Temp\\chromedriver.exe'
 else:
-    options.binary_location = '/usr/bin/google-chrome'
+    options.binary_location = '/usr/bin/google-chrome-stable'
     chrome_driver_binary = '/usr/lib/chromium-browser/chromedriver'
 
 
