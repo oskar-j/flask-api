@@ -5,7 +5,6 @@ import json
 from api.utils.test_base import BaseTestCase
 from api.models.model_country import Country
 from api.models.model_panel_provider import PanelProvider
-from datetime import datetime
 
 
 TIME_DOT_COM = 'time dot com'

@@ -3,6 +3,8 @@
 
 from flask import Blueprint
 from flask import request
+
+from api.models.model_panel_provider import PanelProvider, PanelProviderSchema
 from api.utils.responses import response_with
 from api.utils import responses as resp
 from api.models.model_country import Country, CountrySchema
@@ -59,6 +61,14 @@ def get_location_list():
     location_schema = LocationSchema(many=True, only=['id', 'name', 'date_created', 'external_id'])
     locations, error = location_schema.dump(fetched)
     return response_with(resp.SUCCESS_200, value={"locations": locations})
+
+
+@route_path_general.route('/panels', methods=['GET'])
+def get_panel_providers_list():
+    fetched = PanelProvider.query.all()
+    location_schema = PanelProviderSchema(many=True, only=['id', 'code', 'date_created', 'date_updated'])
+    panels, error = location_schema.dump(fetched)
+    return response_with(resp.SUCCESS_200, value={"panels": panels})
 
 
 @route_path_general.route('/target_groups', methods=['GET'])
