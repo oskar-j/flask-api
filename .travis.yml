@@ -10,17 +10,19 @@ sudo: required
 services:
   - postgresql
 
+addons:
+  chrome: stable
+  apt:
+    packages:
+      - chromium-chromedriver
+
 # command to install dependencies
 install:
   - pip install -r devtest/requirements.txt
-  - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-  - echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
-  - sudo apt-get update
-  - sudo apt-get install google-chrome-stable
-  - sudo apt-get install chromium-chromedriver
+  - whereis google-chrome-stable
+  - whereis chromedriver
 
 before_script:
-  # - sudo service postgresql start
   - chmod +x devtest/test.sh
   - psql -c 'CREATE DATABASE dev;' -U postgres
   - psql -c "CREATE USER dev WITH PASSWORD 'WFwt8UDpkfUpRsVS';" -U postgres
