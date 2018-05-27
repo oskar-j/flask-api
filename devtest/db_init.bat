@@ -8,4 +8,4 @@ echo DATABASE_URL value set to %DATABASE_URL%
 set DEVTEST_CONF=DEVEL
 echo DEVTEST_CONF value set to %DEVTEST_CONF%
 
-python manage.py db migrate
+python manage.py db init
