@@ -2,14 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import json
+
+from api.logic.pricing import FirstPricingLogic, SecondPricingLogic, ThirdPricingLogic
 from api.utils.test_base import BaseTestCase
 from api.models.model_country import Country
 from api.models.model_panel_provider import PanelProvider
 
 
-TIME_DOT_COM = 'time dot com'
-OPEN_LIBRARY = 'open library'
-TIME_DOT_COM_ALT = 'time dot com [alt]'
+TIME_DOT_COM = FirstPricingLogic.panel_id
+OPEN_LIBRARY = SecondPricingLogic.panel_id
+TIME_DOT_COM_ALT = ThirdPricingLogic.panel_id
 
 
 def create_panel_providers():

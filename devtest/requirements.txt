@@ -13,3 +13,5 @@ nose2
 SQLAlchemy
 Werkzeug
 -e git://github.com/gangverk/flask-swagger.git#egg=flask-swagger
+selenium
+beautifulsoup4
