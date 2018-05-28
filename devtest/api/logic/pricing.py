@@ -6,6 +6,7 @@ import json
 import platform
 import time
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from api.logic import price, recur_collection_search, ilen
@@ -53,9 +54,13 @@ class FirstPricingLogic(PricingLogic):
 
         # Let the site fully load
         time.sleep(15)
-        # element_to_be_clickable is not always reliable due to cookie popups etc
-        element = WebDriverWait(driver, web_timeout_in_seconds).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, 'input.btn')))
+
+        try:
+            # element_to_be_clickable is not always reliable due to cookie popups or other unknown
+            element = WebDriverWait(driver, web_timeout_in_seconds).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'input.btn')))
+        except TimeoutException:
+            element = driver.find_element_by_css_selector('input.btn')
 
         # Skipping the GDPR protection
         element.click()
@@ -103,8 +108,11 @@ class ThirdPricingLogic(PricingLogic):
     def _do_scrapping(driver):
         driver.get('http://time.com/')
         time.sleep(15)
-        element = WebDriverWait(driver, web_timeout_in_seconds).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, 'input.btn')))
+        try:
+            element = WebDriverWait(driver, web_timeout_in_seconds).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'input.btn')))
+        except TimeoutException:
+            element = driver.find_element_by_css_selector('input.btn')
         element.click()
         time.sleep(5)
         soup = BeautifulSoup(driver.page_source, "html.parser")
