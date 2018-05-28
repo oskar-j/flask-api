@@ -55,7 +55,7 @@ class TestCountries(BaseTestCase):
         )
         data = safe_json_loads(response.data)
         self.assertEqual(200, response.status_code)
-        self.assertTrue('countries' in data)
+        self.assertTrue('countries' in data, msg="test_get_countries has empty result")
 
     def test_get_country_detail(self):
         response = self.app.get(
@@ -64,7 +64,7 @@ class TestCountries(BaseTestCase):
             )
         data = safe_json_loads(response.data)
         self.assertEqual(200, response.status_code)
-        self.assertTrue('country' in data)
+        self.assertTrue('country' in data, msg="test_get_country_detail has empty result")
 
     def test_create_country(self):
         country = {
@@ -79,4 +79,4 @@ class TestCountries(BaseTestCase):
             )
         data = safe_json_loads(response.data)
         self.assertEqual(200, response.status_code)
-        self.assertTrue('country' in data)
+        self.assertTrue('country' in data, msg="test_create_country has empty result")

@@ -1,4 +1,4 @@
-from api.logic import recur_dict_search
+from api.logic import recur_collection_search, ilen
 from api.utils.test_base import BaseTestCase
 
 
@@ -13,6 +13,6 @@ class TestPricingCalculators(BaseTestCase):
         self.test_dict = create_test_dict()
 
     def test_price_estimates(self):
-        result = len(list(recur_dict_search(self.test_dict)))
-        self.assertIsInstance(result, int)
-        self.assertTrue(result == 2)
+        result = ilen(recur_collection_search(self.test_dict))
+        self.assertIsInstance(result, int, msg="TestPricingCalculators returns odd type")
+        self.assertEqual(result, 2, msg="TestPricingCalculators failed to match properly")

@@ -8,7 +8,7 @@ import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from api.logic import price, recur_dict_search
+from api.logic import price, recur_collection_search, ilen
 
 
 web_timeout_in_seconds = 20
@@ -81,8 +81,8 @@ class SecondPricingLogic(PricingLogic):
     def _do_parsing():
         with urllib.request.urlopen("http://openlibrary.org/search.json?q=the+lord+of+the+rings") as url:
             data = json.loads(url.read().decode())
-            result = recur_dict_search(data)
-            return len(list(result))
+            result = recur_collection_search(data)
+            return ilen(result)
 
 
 class ThirdPricingLogic(PricingLogic):
