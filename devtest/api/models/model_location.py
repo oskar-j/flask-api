@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+from api.models.model_location_group import LocationGroup
 from api.utils.database import db
 from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields
@@ -8,10 +8,10 @@ from api.models import Base
 
 
 # Location is linked with LocationGroup via many to many relationship:
-locations = db.Table('locations',
-    db.Column('location_id', db.Integer, db.ForeignKey('location.id'), primary_key=True),
-    db.Column('location_group_id', db.Integer, db.ForeignKey('location_group.id'), primary_key=True)
-)
+location_groups = db.Table('location_groups',
+                           db.Column('location_id', db.Integer, db.ForeignKey('location.id'), primary_key=True),
+                           db.Column('location_group_id', db.Integer, db.ForeignKey('location_group.id'), primary_key=True)
+                           )
 
 
 class Location(Base):
@@ -21,6 +21,9 @@ class Location(Base):
     name = db.Column(db.String(12), unique=True, nullable=False)
     external_id = db.Column(db.String(12), unique=True, nullable=False)
     secret_code = db.Column(db.String(12), unique=True, nullable=False)
+
+    location_groups = db.relationship('LocationGroup', secondary=location_groups,
+                                      lazy='subquery', backref=db.backref('locations', lazy=True))
 
     def __init__(self, name, external_id, secret_code):
         self.name = name
@@ -51,5 +54,4 @@ class LocationSchema(ModelSchema):
     external_id = fields.String(required=True)
     secret_code = fields.String(required=True)
 
-    # country_id = fields.Integer()
-    # panel_provider_id = fields.Integer()
+    location_groups = fields.Nested(LocationGroup, many=True)
