@@ -12,10 +12,10 @@ from api.models.model_location import Location, LocationSchema
 from api.models.model_target_group import TargetGroup, TargetGroupSchema
 
 
-route_path_general = Blueprint("route_path_general", __name__)
+route_path_countries = Blueprint("route_path_countries", __name__)
 
 
-@route_path_general.route('/country', methods=['POST'])
+@route_path_countries.route('/country', methods=['POST'])
 def create_country():
     try:
         data = request.get_json()
@@ -27,7 +27,7 @@ def create_country():
         return response_with(resp.INVALID_INPUT_422)
 
 
-@route_path_general.route('/country', methods=['POST'])
+@route_path_countries.route('/country', methods=['POST'])
 def create_location():
     try:
         data = request.get_json()
@@ -39,7 +39,7 @@ def create_location():
         return response_with(resp.INVALID_INPUT_422)
 
 
-@route_path_general.route('/countries', methods=['GET'])
+@route_path_countries.route('/countries', methods=['GET'])
 def get_country_list():
     fetched = Country.query.all()
     country_schema = CountrySchema(many=True, only=['id', 'country_code', 'date_created'])
@@ -47,7 +47,7 @@ def get_country_list():
     return response_with(resp.SUCCESS_200, value={"countries": countries})
 
 
-@route_path_general.route('/country/<string:country_code>', methods=['GET'])
+@route_path_countries.route('/country/<string:country_code>', methods=['GET'])
 def get_country_detail(country_code):
     fetched = Country.query.filter_by(country_code=country_code).first()
     country_schema = CountrySchema()

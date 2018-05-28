@@ -12,10 +12,10 @@ from api.models.model_location import Location, LocationSchema
 from api.models.model_target_group import TargetGroup, TargetGroupSchema
 
 
-route_path_general = Blueprint("route_path_general", __name__)
+route_path_panels = Blueprint("route_path_panels", __name__)
 
 
-@route_path_general.route('/panels', methods=['GET'])
+@route_path_panels.route('/panels', methods=['GET'])
 def get_panel_providers_list():
     fetched = PanelProvider.query.all()
     location_schema = PanelProviderSchema(many=True, only=['id', 'code', 'date_created', 'date_updated'])

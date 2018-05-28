@@ -9,7 +9,10 @@ from flask_swagger import swagger
 from api.utils.database import db
 from api.utils.responses import response_with
 import api.utils.responses as resp
-from api.routes.routes_general import route_path_general
+from api.routes.routes_countries import route_path_countries
+from api.routes.routes_locations import route_path_locations
+from api.routes.routes_panels import route_path_panels
+from api.routes.routes_target_groups import route_path_target_groups
 
 
 # set this to whatever you want
@@ -22,7 +25,10 @@ def create_app(config):
 
     app.config.from_object(config)
 
-    app.register_blueprint(route_path_general, url_prefix=url_prefix)
+    app.register_blueprint(route_path_countries, url_prefix=url_prefix)
+    app.register_blueprint(route_path_locations, url_prefix=url_prefix)
+    app.register_blueprint(route_path_panels, url_prefix=url_prefix)
+    app.register_blueprint(route_path_target_groups, url_prefix=url_prefix)
 
     # START GLOBAL HTTP CONFIGURATIONS
     @app.after_request

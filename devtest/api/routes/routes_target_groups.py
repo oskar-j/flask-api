@@ -12,10 +12,10 @@ from api.models.model_location import Location, LocationSchema
 from api.models.model_target_group import TargetGroup, TargetGroupSchema
 
 
-route_path_general = Blueprint("route_path_general", __name__)
+route_path_target_groups = Blueprint("route_path_target_groups", __name__)
 
 
-@route_path_general.route('/target_groups', methods=['GET'])
+@route_path_target_groups.route('/target_groups', methods=['GET'])
 def get_target_group_list():
     fetched = TargetGroup.query.all()
     target_group_schema = TargetGroupSchema(many=True, only=['id', 'name', 'date_created', 'external_id'])
@@ -25,7 +25,7 @@ def get_target_group_list():
 
 # Public API responding to the following requests
 # 5 - GET target_groups/:country_code
-@route_path_general.route('/target_groups/<int:country_code>', methods=['GET'])
+@route_path_target_groups.route('/target_groups/<int:country_code>', methods=['GET'])
 def get_target_groups_by_country(country_code):
     fetched = Country.query.filter_by(country_code=country_code).first()
     country_schema = CountrySchema()
