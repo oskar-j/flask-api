@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 from api.logic import price, recur_collection_search, ilen
 import shutil
 from selenium.common.exceptions import NoSuchElementException
+from urllib.error import HTTPError
 
 
 web_timeout_in_seconds = 20
@@ -89,7 +90,14 @@ class SecondPricingLogic(PricingLogic):
         if self.panel_id not in price:
 
             print('SecondPricingLogic is computing the price... please wait!')
-            price[self.panel_id] = SecondPricingLogic._do_parsing()
+            while True:
+                try:
+                    price[self.panel_id] = SecondPricingLogic._do_parsing()
+                except HTTPError:
+                    # There were sometimes code 500 http responses on the Travis
+                    time.sleep(10)
+                    continue
+                break
 
     @staticmethod
     def _do_parsing():
