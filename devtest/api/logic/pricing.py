@@ -6,7 +6,7 @@ import json
 import platform
 import time
 from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from api.logic import price, recur_collection_search, ilen
@@ -71,7 +71,7 @@ class FirstPricingLogic(PricingLogic):
             element.click()
             # Wait for the site to fully load
             time.sleep(5)
-        except NoSuchElementException:
+        except (NoSuchElementException, TimeoutException):
             pass
             # This is expected behaviour - GDPR notice may be disabled if we're whitelisted
 
@@ -128,7 +128,7 @@ class ThirdPricingLogic(PricingLogic):
             element.click()
             # Wait for the site to fully load
             time.sleep(5)
-        except NoSuchElementException:
+        except (NoSuchElementException, TimeoutException):
             pass
             # This is expected behaviour - GDPR notice may be disabled if we're whitelisted
 
