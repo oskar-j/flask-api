@@ -10,6 +10,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from api.logic import price, recur_collection_search, ilen
+import shutil
 
 
 web_timeout_in_seconds = 20
@@ -20,8 +21,14 @@ if platform.system() == 'Windows':
     options.binary_location = 'C:\\Users\\oskar\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe'
     chrome_driver_binary = 'C:\\Temp\\chromedriver.exe'
 else:
-    options.binary_location = '/usr/bin/google-chrome-stable'
-    chrome_driver_binary = '/usr/lib/chromium-browser/chromedriver'
+    options.binary_location = shutil.which('chrome')  # Ask OS where is the chrome binary
+    if options.binary_location is None:
+        options.binary_location = '/usr/bin/google-chrome-stable'
+
+    chrome_driver_binary = shutil.which('chromedriver')  # Again, ask OS for path to chrome-driver
+    if chrome_driver_binary is None:
+        chrome_driver_binary = '/usr/lib/chromium-browser/chromedriver'
+
     # Travis CI specific
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--headless')
@@ -54,6 +61,10 @@ class FirstPricingLogic(PricingLogic):
 
         # Let the site fully load
         time.sleep(15)
+
+        if platform.system() == 'Linux':
+            # investigate why selenium on travis behaves odd for this website
+            print(driver.page_source)
 
         try:
             # element_to_be_clickable is not always reliable due to cookie popups or other unknown
@@ -108,6 +119,11 @@ class ThirdPricingLogic(PricingLogic):
     def _do_scrapping(driver):
         driver.get('http://time.com/')
         time.sleep(15)
+
+        if platform.system() == 'Linux':
+            # investigate why selenium on travis behaves odd for this website
+            print(driver.page_source)
+
         try:
             element = WebDriverWait(driver, web_timeout_in_seconds).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'input.btn')))
