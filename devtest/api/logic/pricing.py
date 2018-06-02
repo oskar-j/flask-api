@@ -6,11 +6,12 @@ import json
 import platform
 import time
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
+# from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from api.logic import price, recur_collection_search, ilen
 import shutil
+from selenium.common.exceptions import NoSuchElementException
 
 
 web_timeout_in_seconds = 20
@@ -62,21 +63,18 @@ class FirstPricingLogic(PricingLogic):
         # Let the site fully load
         time.sleep(15)
 
-        if platform.system() == 'Linux':
-            # investigate why selenium on travis behaves odd for this website
-            print(driver.page_source)
-
         try:
-            # element_to_be_clickable is not always reliable due to cookie popups or other unknown
+            # Wait for any popups to go away - wait no more than web_timeout_in_seconds
             element = WebDriverWait(driver, web_timeout_in_seconds).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'input.btn')))
-        except TimeoutException:
-            element = driver.find_element_by_css_selector('input.btn')
+            # Skipping the GDPR protection
+            element.click()
+            # Wait for the site to fully load
+            time.sleep(5)
+        except NoSuchElementException:
+            pass
+            # This is expected behaviour - GDPR notice may be disabled if we're whitelisted
 
-        # Skipping the GDPR protection
-        element.click()
-
-        time.sleep(5)
         how_many = driver.find_element_by_tag_name('body').text.count('a')
         return how_many / 100
 
@@ -118,19 +116,22 @@ class ThirdPricingLogic(PricingLogic):
     @staticmethod
     def _do_scrapping(driver):
         driver.get('http://time.com/')
+
+        # Let the site fully load
         time.sleep(15)
 
-        if platform.system() == 'Linux':
-            # investigate why selenium on travis behaves odd for this website
-            print(driver.page_source)
-
         try:
+            # Wait for any popups to go away - wait no more than web_timeout_in_seconds
             element = WebDriverWait(driver, web_timeout_in_seconds).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'input.btn')))
-        except TimeoutException:
-            element = driver.find_element_by_css_selector('input.btn')
-        element.click()
-        time.sleep(5)
+            # Skipping the GDPR protection
+            element.click()
+            # Wait for the site to fully load
+            time.sleep(5)
+        except NoSuchElementException:
+            pass
+            # This is expected behaviour - GDPR notice may be disabled if we're whitelisted
+
         soup = BeautifulSoup(driver.page_source, "html.parser")
         count_tags = len([tag for tag in soup.findAll()])
         return count_tags / 100
