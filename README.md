@@ -7,7 +7,7 @@ flask-api
 
 ### Introduction
 
-A showcase of flask framework's capabilities including REST and SQL-ALchemy
+A showcase of flask framework's capabilities including REST and SQL-ALchemy, in reaction to the repository [pbc/devtest](https://github.com/pbc/devtest).
 
 ### Installation
 
